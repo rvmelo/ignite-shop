@@ -20,11 +20,6 @@ export const Product = styled('div', {
   justifyContent: 'center',
   overflow: 'hidden',
 
-  '&.keen-slider__slide': {
-    minWidth: '43.5rem !important',
-    maxWidth: '41rem !important',
-  },
-
   img: {
     objectFit: 'cover',
   },
