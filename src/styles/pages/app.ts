@@ -6,7 +6,9 @@ export const Container = styled('div', {
   alignItems: 'flex-start',
   justifyContent: 'center',
   minHeight: '100vh',
+  width: '100vw',
   position: 'relative',
+  overflowX: 'hidden',
 })
 
 export const Header = styled('header', {
