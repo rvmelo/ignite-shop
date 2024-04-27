@@ -1,8 +1,6 @@
-import axios from 'axios'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import { useState } from 'react'
 import Stripe from 'stripe'
 
 import { useCart } from '@/contexts/cartContext'
@@ -26,26 +24,6 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false)
-
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true)
-
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId,
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-    } catch (err) {
-      setIsCreatingCheckoutSession(false)
-      alert('Falha no redirecionamento')
-    }
-  }
-
   const { handleAddToCart } = useCart()
 
   return (
@@ -79,6 +57,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   params,
 }) => {

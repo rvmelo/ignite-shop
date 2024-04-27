@@ -13,9 +13,14 @@ interface SuccessProps {
     name: string
     imageUrl: string
   }
+  productCount: number
 }
 
-export default function Success({ customerName, product }: SuccessProps) {
+export default function Success({
+  customerName,
+  product,
+  productCount,
+}: SuccessProps) {
   return (
     <>
       <Head>
@@ -30,8 +35,9 @@ export default function Success({ customerName, product }: SuccessProps) {
         </ImageContainer>
 
         <p>
-          Uhuul <strong>{customerName}</strong>, sua{' '}
-          <strong>{product.name}</strong> já está a caminho da sua casa.
+          Uhuul <strong>{customerName}</strong>, sua compra de {productCount}{' '}
+          {productCount !== 1 ? 'camisetas' : 'camiseta'} já está a caminho de
+          sua casa.
         </p>
 
         <Link href="/">Voltar ao catálogo</Link>
@@ -58,14 +64,15 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   const customerName = session.customer_details?.name
   const product = session.line_items?.data[0]?.price?.product as Stripe.Product
+  const productCount = session.line_items?.data.length || 0
 
   return {
     props: {
       customerName,
       product: {
-        name: product.name,
         imageUrl: product.images[0],
       },
+      productCount,
     },
   }
 }

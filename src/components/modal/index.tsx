@@ -22,8 +22,14 @@ interface ModalProps {
 }
 
 export const Modal: React.FC<ModalProps> = ({ modalState, setModalState }) => {
-  const { products, handleRemoveFromCart, totalProducts, formattedTotalPrice } =
-    useCart()
+  const {
+    products,
+    handleRemoveFromCart,
+    totalProducts,
+    formattedTotalPrice,
+    isCreatingCheckoutSession,
+    handleBuyProduct,
+  } = useCart()
 
   return (
     <ModalContainer data-state={modalState === 'opened' ? 'opened' : 'closed'}>
@@ -71,7 +77,12 @@ export const Modal: React.FC<ModalProps> = ({ modalState, setModalState }) => {
             <strong className="price">{formattedTotalPrice}</strong>
           </LabelsContainer>
         </SaleInfo>
-        <PurchaseButton>Finalizar Compra</PurchaseButton>
+        <PurchaseButton
+          disabled={isCreatingCheckoutSession}
+          onClick={handleBuyProduct}
+        >
+          Finalizar Compra
+        </PurchaseButton>
       </BottomSection>
     </ModalContainer>
   )

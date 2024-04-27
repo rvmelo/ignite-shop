@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, {
   createContext,
   ReactNode,
@@ -18,8 +19,10 @@ interface CartContextType {
   }[]
   totalProducts: number
   formattedTotalPrice: string
+  isCreatingCheckoutSession: boolean
   handleAddToCart: (product: CartContextType['products'][number]) => void
   handleRemoveFromCart: (product: CartContextType['products'][number]) => void
+  handleBuyProduct: () => Promise<void>
 }
 
 interface CartProviderProps {
@@ -32,6 +35,9 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({
   children,
 }) => {
   const [products, setProducts] = useState<CartContextType['products']>([])
+
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+    useState(false)
 
   const totalProducts = useMemo(() => products?.length, [products])
 
@@ -68,6 +74,28 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({
     setProducts(auxProducts)
   }
 
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      const productItems = products.map((product) => ({
+        price: product.defaultPriceId,
+        quantity: 1,
+      }))
+
+      const response = await axios.post('/api/checkout', {
+        productItems,
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+    } catch (err) {
+      setIsCreatingCheckoutSession(false)
+      alert('Falha no redirecionamento')
+    }
+  }
+
   return (
     <cartContext.Provider
       value={{
@@ -76,6 +104,8 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({
         formattedTotalPrice,
         handleAddToCart,
         handleRemoveFromCart,
+        handleBuyProduct,
+        isCreatingCheckoutSession,
       }}
     >
       {children}
