@@ -21,6 +21,7 @@ interface ProductProps {
     imageUrl: string
     price: string
     defaultPriceId: string
+    unformattedPrice: number
   }
 }
 
@@ -104,6 +105,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
             }).format(price.unit_amount / 100)
           : 0,
         defaultPriceId: price.id,
+        unformattedPrice: price.unit_amount ? price.unit_amount / 100 : 0,
       },
     },
     revalidate: 60 * 60 * 1, // 1 hour

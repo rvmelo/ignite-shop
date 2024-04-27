@@ -14,8 +14,10 @@ interface CartContextType {
     imageUrl: string
     price: string
     defaultPriceId: string
+    unformattedPrice: number
   }[]
   totalProducts: number
+  formattedTotalPrice: string
   handleAddToCart: (product: CartContextType['products'][number]) => void
   handleRemoveFromCart: (product: CartContextType['products'][number]) => void
 }
@@ -32,6 +34,15 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({
   const [products, setProducts] = useState<CartContextType['products']>([])
 
   const totalProducts = useMemo(() => products?.length, [products])
+
+  const totalPrice = products.reduce((previousValue, currentItem) => {
+    return previousValue + currentItem.unformattedPrice
+  }, 0)
+
+  const formattedTotalPrice = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(totalPrice)
 
   const handleAddToCart = (newProduct: CartContextType['products'][number]) => {
     const foundProduct = products.find(
@@ -62,6 +73,7 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({
       value={{
         products,
         totalProducts,
+        formattedTotalPrice,
         handleAddToCart,
         handleRemoveFromCart,
       }}
