@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import Stripe from 'stripe'
 
+import { useCart } from '@/contexts/cartContext'
 import { stripe } from '@/lib/stripe'
 import {
   ImageContainer,
@@ -44,6 +45,8 @@ export default function Product({ product }: ProductProps) {
     }
   }
 
+  const { handleAddToCart } = useCart()
+
   return (
     <>
       <Head>
@@ -59,11 +62,8 @@ export default function Product({ product }: ProductProps) {
           <span>{product.price}</span>
           <p>{product.description}</p>
 
-          <button
-            disabled={isCreatingCheckoutSession}
-            onClick={handleBuyProduct}
-          >
-            Comprar agora
+          <button onClick={() => handleAddToCart(product)}>
+            Colocar na Sacola
           </button>
         </ProductDetails>
       </ProductContainer>

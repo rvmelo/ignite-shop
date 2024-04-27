@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 
+import { useCart } from '@/contexts/cartContext'
 import {
   BottomSection,
   InfoContainer,
@@ -14,7 +15,6 @@ import {
 } from '@/styles/components/modal'
 
 import closeImg from '../../assets/close.svg'
-import shirtImg from '../../assets/shirt.svg'
 
 interface ModalProps {
   modalState: 'opened' | 'closed'
@@ -22,6 +22,8 @@ interface ModalProps {
 }
 
 export const Modal: React.FC<ModalProps> = ({ modalState, setModalState }) => {
+  const { products, handleRemoveFromCart } = useCart()
+
   return (
     <ModalContainer data-state={modalState === 'opened' ? 'opened' : 'closed'}>
       <Image
@@ -34,16 +36,26 @@ export const Modal: React.FC<ModalProps> = ({ modalState, setModalState }) => {
       />
       <TopSection>
         <h2>Sacola de Compras</h2>
-        <ProductsContainer>
-          <ProductItemContainer>
-            <Image className="shirtImg" src={shirtImg} alt="" />
-            <InfoContainer>
-              <h2>Camiseta Beyond the Limits</h2>
-              <span>R$ 79,90</span>
-              <button>Remover</button>
-            </InfoContainer>
-          </ProductItemContainer>
-        </ProductsContainer>
+        {products.map((product) => (
+          <ProductsContainer key={product.id}>
+            <ProductItemContainer>
+              <Image
+                className="shirtImg"
+                width={96}
+                height={96}
+                src={product.imageUrl}
+                alt=""
+              />
+              <InfoContainer>
+                <h2>{product.name}</h2>
+                <span>{product.price}</span>
+                <button onClick={() => handleRemoveFromCart(product)}>
+                  Remover
+                </button>
+              </InfoContainer>
+            </ProductItemContainer>
+          </ProductsContainer>
+        ))}
       </TopSection>
       <BottomSection>
         <SaleInfo>
